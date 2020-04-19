@@ -15,14 +15,14 @@ config.conn.forEach(function(element){
             callback = arg;
             arg = {};
         }
-        request(options,function(err,response,body){
+        request(options,function(err,response,body){ // fetching response from backend
             if(err){
-                arg[element.url.toString()] = err;
+                return callback(err);
             }
-            else if(response.statusCode !== 200){
-                arg[element.url.toString()] = response.statusMessage;
+            if(response.statusCode !== 200){
+                return callback(response.statusMessage);
             }
-            else arg[element.url.toString()] = body;
+            arg[element.url.toString()] = body;
 
             return callback(null,arg);
 
@@ -34,7 +34,7 @@ config.conn.forEach(function(element){
     
 });
 
-async.waterfall(functionArray,function(err,result){
+async.waterfall(functionArray,function(err,result){ // Executing each API cal in waterfall model.
     if(err){
         console.log(err);
     }
